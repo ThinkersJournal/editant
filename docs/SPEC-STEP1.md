@@ -26,6 +26,12 @@ headings in block quotes/lists (CommonMark: a `#` inside a list item or quote is
 - **obsidian-mcp** (adrienthebo): replace, insert-before/after, append-to-section.
 - **quantalogic SafeMarkdownEditor**: transactions + validation; delete by section ID or heading.
 - **texio-cli** (Rust): `section` and `replace --section --dry-run --write`; refuses ambiguous headings; self-described early preview. Closest to our MVP.
+  **[read, not run]** 2026-11-19, texio-cli 0.1.3 (MIT, `Allra-Fintech/texio` @ `4ea7098`, cloned to scratch; the build was denied by the session's permission classifier, so NOTHING was executed): `docs/markdown-support.md`, `docs/cli-contract.md`, `Cargo.toml`, `src/main.rs` (826 lines) read. Against our four differentiators:
+  (a) **token-bound preview + stale refusal: not found.** `replace --dry-run` shows a diff; grep of `src/` and `docs/cli-contract.md` for hash/token/stale/checksum/sha/blake finds no hit (control: the same grep finds "ambiguous" and "dry-run", which are present). Not run, so "absent" means "not in the source read".
+  (b) **child-excluding default extent: no, the opposite.** README: "The replacement covers the complete selected body, including nested subsections"; sections run to the next heading of the same or higher level.
+  (c) **byte-for-byte preservation:** claimed (LF/CRLF, final newline, front matter untouched, atomic write, permissions kept; unit tests for CRLF and setext). No `proptest`/`quickcheck` in `Cargo.toml`, `src/main.rs`, `tests/` (control: `Cargo.toml` listing shows its real dev-dependencies). Claims untested by us.
+  (d) **ambiguity refusal: yes** (exit code 5). Lookup is ASCII case-insensitive; "path-like selectors for duplicate headings are not implemented yet" (its own limitations list).
+  Also: it recognises YAML front matter and skips HTML blocks and fences; it uses `pulldown-cmark` 0.13. **Consequence:** (d) is not a differentiator, (b) is a deliberate difference (our D-extent default), (a) and header-path addressing are the open ones. The README must not claim novelty for the idea or for ambiguity refusal.
 - Rust read-only/other: `mdq` (jq-like queries), `mdlens` (section read for agents), `treemd` (viewer, interactive editing), `kugiri` (marker-based blocks).
 
 **Reading:** the idea is not new. Differentiators we can still earn: (a) preview bound to a hash token with stale-edit refusal, (b) default extent excludes child sections, (c) byte-for-byte preservation with property tests, (d) refusal of ambiguity. **Whether any competitor already does (a)-(d) is unverified**; before the README claims novelty, open texio-cli and md-mcp and run them (task S1).
@@ -58,7 +64,7 @@ TOML/JSON, MCP server, GUI, merging, history/undo, human-approval UI, insert-bef
 S1 survey close-out (run texio-cli and md-mcp, record results) -> S2 parser/section model + outline + tests -> S3 preview/apply/token + property tests with sabotage checks -> S4 CLI -> S5 README claims earned by tests. One PR per day of work per the portfolio rule.
 
 ## 6. Unverified, stated plainly
-Competitor behaviour (1.2); parser behaviour for HTML blocks, TOML front matter and container headings; Windows atomic-rename behaviour under antivirus locks; whether `pulldown-cmark` offsets for setext headers with trailing spaces or lazy continuation lines are exact (probe covered only the simple case).
+Competitor behaviour (1.2; texio-cli read but not run, md-mcp and the others not opened); parser behaviour for HTML blocks, TOML front matter and container headings; Windows atomic-rename behaviour under antivirus locks; whether `pulldown-cmark` offsets for setext headers with trailing spaces or lazy continuation lines are exact (probe covered only the simple case).
 
 ## 7. Decisions for CireSnave
 - **[ASK] D1 Name matching:** case-sensitive exact (recommended) vs case-insensitive. Blocks: S2.
