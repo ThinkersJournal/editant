@@ -67,6 +67,8 @@ S1 survey close-out (run texio-cli and md-mcp, record results) -> S2 parser/sect
 Competitor behaviour (1.2; texio-cli read but not run, md-mcp and the others not opened); parser behaviour for HTML blocks, TOML front matter and container headings; Windows atomic-rename behaviour under antivirus locks; whether `pulldown-cmark` offsets for setext headers with trailing spaces or lazy continuation lines are exact (probe covered only the simple case).
 
 ## 7. Decisions for CireSnave
+**Provisional 2026-11-19 (pm-ants, relayed [FINDING]; CireSnave has not read this and may overrule):** D1-D5 = the recommended option of each; D6 confirmed (crates.io API: `editant` 0.0.0 placeholder, created 2026-11-19T16:57Z, repo ThinkersJournal/editant, not yanked).
+
 - **[ASK] D1 Name matching:** case-sensitive exact (recommended) vs case-insensitive. Blocks: S2.
 - **[ASK] D2 Header line:** a replacement keeps the header and replaces the body (recommended; deletion of a section removes header and body), vs the replacement text includes the header so renaming is possible in one step. Blocks: S3.
 - **[ASK] D3 Headers inside lists/block quotes:** treat as non-addressable (recommended; they are not document structure) vs addressable. Blocks: S2.
