@@ -55,6 +55,19 @@ headings in block quotes/lists (CommonMark: a `#` inside a list item or quote is
 
 **What is left for us to earn, stated plainly:** (i) a preview that returns original + replacement + diff **bound by a token to the replacement as well as the original**, so what was previewed is exactly what is applied (zekaizer's hash binds the original only, as far as read); (ii) setext + CommonMark-parser correctness (zekaizer scans ATX by hand and excludes setext); (iii) property tests with sabotage checks; (iv) a small library + CLI, Apache-2.0 OR MIT, in Rust (zekaizer is a vault-oriented server, MIT). **None of these is a reason to build a competitor by default.** That a Rust MIT project already implements most of this MVP is a decision for CireSnave (new [ASK] D7 below); the README must claim only what the matrix shows, each marked read-not-run until we run it.
 
+### 1.3 zekaizer/md-mcp: source read, fit verdict (2026-11-19; D7 ruled by CireSnave, board 465: build EditAnt ON it)
+
+Read at upstream `main` a11b5a9 (v0.11.0, 2026-10-19), cloned to a scratch dir; **read, not built, not run**. Crates: `md-core` (lib, 6,367 lines, `publish = false`) and `md-server` (MCP over stdio/HTTP, OAuth, git sync).
+
+- **Parser:** hand-rolled ATX scan in `document.rs` (`Document::parse`, `parse_atx`, `Fence`); ADR-0003 **deliberately excludes setext** and rejected comrak/pulldown-cmark. Setext support therefore contradicts a stated upstream decision, not a gap they missed.
+- **Stale refusal:** `section.rs` `content_hash` = first 8 hex of blake3 over the LF-normalised section content (32 bits, ADR-0005), heading line excluded. Binds the original only.
+- **Preview:** `replace_text` has `dry_run` (`tools_write.rs`), which reports changes without writing. **No token ties a preview to a later apply**; a repeat call recomputes.
+- **Tests:** unit tests in-module; `proptest` is declared in the workspace `Cargo.toml` but **no `.rs` file uses it** (grep, 0 hits; positive control: `blake3` hits). Fuzzing is a Python e2e suite (`tests/e2e/suites/fuzz.py`).
+- **Shape:** vault/server-oriented (path jail, transactions, search, OAuth, sync); not a small embeddable library, and `md-core` is unpublished.
+- **PROVENANCE DEFECT:** no LICENSE file in the tree or in git history (`git log -- 'LICENSE*'` empty; GitHub `licenseInfo` null). MIT is asserted only by `license = "MIT"` in `Cargo.toml` (author Luke Lee). Our fork must keep that notice, but the issue should ask them to add the licence text.
+
+**Verdict: still a good fit as a base, with two caveats.** It has the section model, ambiguity refusal and hash refusal we need, and is active (272 commits, last 2026-10-19). Caveats: (a) setext and a CommonMark parser are against ADR-0003, so that PR may be declined; (b) the missing licence file must be resolved before we copy anything. Features (i), (iii) and (iv) are plausible upstream contributions; (ii) is the likeliest to be refused.
+
 ## 2. Scope (MVP, as the seed section 2, refined)
 Library crate `editant` + CLI `editant`; MCP wrapper later.
 
