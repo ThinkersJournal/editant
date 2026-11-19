@@ -21,6 +21,12 @@ headings in block quotes/lists (CommonMark: a `#` inside a list item or quote is
 
 ### 1.2 Existing section editors (all **[seen]** via web search 2026-11-19; none opened, none run; boundary rules unchecked)
 - **md-mcp** (afriemann): MCP, sections addressed by dot-separated heading path, per-section read/edit.
+  **[read, not run]** 2026-11-19, md-mcp 0.1.0 (Python, MIT, `afriemann/md-mcp` @ `75bce2a`, last push 2026-11-18; cloned to scratch, nothing executed): `README.md`, `pyproject.toml`, grep of `src/md_mcp/*.py` (document.py 1405 lines, server.py 363); it uses `mistletoe` 1.6.0, not `pulldown-cmark`. Against our four differentiators:
+  (a) **token-bound preview + stale refusal: not found.** `patch_section` returns a unified diff and `replace_section` is a separate call with the same arguments; nothing binds them. The only `mtime` use is an in-memory AST cache invalidation (`document.py:25,790-801`). A grep for hash/token/stale/sha/etag/hypothesis in `src/` and `pyproject.toml` hits only `mistletoe` token classes and that cache (control: the grep finds both, which are present).
+  (b) **child-excluding extent: yes, by default for body edits.** `replace_section` replaces the body and preserves the heading; `replace_in_section` excludes heading and children; `get_section depth=0` = own body; `delete_section include_children=True` by default removes the whole subtree (the promote-children mode exists).
+  (c) **byte fidelity: claimed and tested** (CRLF, mixed, lone-CR, missing final newline, dominant ending for new lines; 4130 lines of pytest). No property-based testing dependency (`hypothesis` absent from the dev extras).
+  (d) **ambiguity refusal: NO, the opposite.** "Ambiguous paths (duplicate heading texts at the same level) resolve to the first match"; matching is case-insensitive. Path separator is `.`, so a heading containing a dot is unaddressable or unclear (not checked in source).
+  Also: front matter is addressable as a reserved path `frontmatter`; it has `add_section` (under/before/after), regex search over sections, `--allow-root` path confinement, and templated (`{{ }}`) file support. **Consequence for us:** header-path addressing, own-body default and byte fidelity are NOT novel; refusing ambiguity, hash-bound preview with stale refusal, and property-tested preservation are the open differentiators (texio refuses ambiguity but lacks paths and tokens; md-mcp has paths and previews but guesses on ambiguity and has no token). Insert-before/after and front-matter editing are table stakes by the seed's own next-step list.
 - **nodiom-mcp**: MCP, selectors like `# Heading > ## Subheading`, a tree/outline tool.
 - **basic-memory** `edit_note`: `replace_section` op among append/prepend/find-replace.
 - **obsidian-mcp** (adrienthebo): replace, insert-before/after, append-to-section.
@@ -64,7 +70,7 @@ TOML/JSON, MCP server, GUI, merging, history/undo, human-approval UI, insert-bef
 S1 survey close-out (run texio-cli and md-mcp, record results) -> S2 parser/section model + outline + tests -> S3 preview/apply/token + property tests with sabotage checks -> S4 CLI -> S5 README claims earned by tests. One PR per day of work per the portfolio rule.
 
 ## 6. Unverified, stated plainly
-Competitor behaviour (1.2; texio-cli read but not run, md-mcp and the others not opened); parser behaviour for HTML blocks, TOML front matter and container headings; Windows atomic-rename behaviour under antivirus locks; whether `pulldown-cmark` offsets for setext headers with trailing spaces or lazy continuation lines are exact (probe covered only the simple case).
+Competitor behaviour (1.2; texio-cli and md-mcp read but not run, the rest not opened); parser behaviour for HTML blocks, TOML front matter and container headings; Windows atomic-rename behaviour under antivirus locks; whether `pulldown-cmark` offsets for setext headers with trailing spaces or lazy continuation lines are exact (probe covered only the simple case).
 
 ## 7. Decisions for CireSnave
 **Provisional 2026-11-19 (pm-ants, relayed [FINDING]; CireSnave has not read this and may overrule):** D1-D5 = the recommended option of each; D6 confirmed (crates.io API: `editant` 0.0.0 placeholder, created 2026-11-19T16:57Z, repo ThinkersJournal/editant, not yanked).
