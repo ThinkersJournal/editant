@@ -109,4 +109,9 @@ Competitor behaviour (1.2; texio-cli, md-mcp (afriemann), nodiom, obsidian-mcp (
 - **[ASK] D7 Build, adopt or contribute (added 2026-11-19 after the survey close-out):** `zekaizer/md-mcp` (MIT, Rust) already has heading-path + occurrence addressing, ambiguity refusal and per-section hash stale refusal. Options: (1) continue with the narrowed differentiators (i)-(iv) of section 1.2 as a small library+CLI under the layering CireSnave set on 2026-11-18 (recommended only if he values a library that others embed and the preview-token binding, since the server itself exists); (2) contribute those features upstream instead; (3) adopt md-mcp as the editing-tool layer and stop. The lane recommends deciding before S2. Blocks: S2.
 - **[ASK] D6 Crate/binary name** `editant` on crates.io (not checked for availability by this lane). Blocks: first publish only.
 
+## 8. Open questions / consumers
+
+- **AnalysAnt ledger writer (added 2026-11-19, pm-ants [NOTICE]; AnalysAnt spec 1.8/1.9):** only the writing tool writes the AnalysAnt claim-identity ledger, and that writing tool is EditAnt. **Interface not yet received:** AnalysAnt will send what to write, the atomicity it needs, and the ids (from its single content-based id scheme). Until then this is a requirement, not a design: no code, no assumed format. Open: does the ledger write go through the section-edit path (token-bound apply, hash refusal) or a separate append path; whether it must be atomic with a section edit (one transaction) or only individually atomic; and how this sits with the upstream md-mcp base (D7 ruled 2026-11-19: build on it; its transaction model is ADR-0007 there, not yet read for this).
+- **D7 status:** ruled by CireSnave (board 465): build EditAnt on zekaizer/md-mcp. Fit verdict in 1.3; the two upstream issues are not yet posted (permission denied once; waiting on the user).
+
 — lane: editant
