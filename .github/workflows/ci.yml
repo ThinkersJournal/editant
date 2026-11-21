@@ -1,0 +1,42 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  licence:
+    name: licence-and-spdx
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Licence files present
+        run: |
+          set -eu
+          for f in LICENSE-MIT LICENSE-APACHE; do
+            test -s "$f" || { echo "missing or empty: $f"; exit 1; }
+          done
+      - name: SPDX line in every source file
+        run: |
+          set -eu
+          # Enumerate from the index, not the disk. Docs-only today, so zero source files is the expected count; the
+          # count is printed so a future empty enumeration (a broken pattern) is visible rather than a silent pass.
+          files=$(git ls-files '*.rs')
+          n=0
+          bad=0
+          for f in $files; do
+            n=$((n+1))
+            head -n 5 "$f" | grep -q 'SPDX-License-Identifier: MIT OR Apache-2.0' || { echo "no SPDX line: $f"; bad=1; }
+          done
+          echo "checked $n .rs file(s)"
+          exit $bad
+
+  # Advisory, copied from AlarmAnt: NOT a required check and no rule is silenced here. The called workflow fixes the rule
+  # profile and the CodeRipper version; this repository passes nothing (it is public, so the default runner is right).
+  portfolio:
+    permissions:
+      contents: read
+    uses: ciresnave/coderipper/.github/workflows/portfolio.yml@c72a6e03479d914de8ea8a73609ba73e93a0de92 # coderipper main on 2026-11-16 (#356; installs CodeRipper 0.47.5)
+
+# TODO(first crate dependency): add `deny.toml` and a cargo-deny job as in epistemologicant, plus fmt/clippy/test.
