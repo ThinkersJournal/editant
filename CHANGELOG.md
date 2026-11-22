@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.2 - 2026-11-22
+
+- docs: SPEC section 8 re-confirmed against analysant-core 0.3.0 (docs only).
+
 ## 0.0.1 - 2026-11-21
 
 - Docs and CI only; no product code.
