@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.3 - 2026-11-26
+
+- CI only: portfolio workflow pinned to coderipper 467fd259 (0.48.1), editant#4. No code change; not breaking. Allocated by pm-assist.
+
 ## 0.0.2 - 2026-11-22
 
 - docs: SPEC section 8 re-confirmed against analysant-core 0.3.0 (docs only).
